@@ -1,0 +1,999 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Rocket.Net -- самый надежный ИИ</title>
+    <link rel="manifest" href="data:application/json,{%22name%22:%22Rocket.Net%22,%22short_name%22:%22Rocket%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%230a0e14%22,%22theme_color%22:%22%2300ffc3%22,%22icons%22:[{%22src%22:%22data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%2300ffc3'/%3E%3Ctext x='50' y='68' font-size='50' text-anchor='middle' fill='%230a0e14' font-family='monospace'%3ER%3C/text%3E%3C/svg%3E%22,%22sizes%22:%22192x192%22,%22type%22:%22image/svg+xml%22}]}">
+    <style>
+        /* ---- ГЛОБАЛЬНЫЙ РЕСЕТ И СТИЛИ ---- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #111a28;
+            --bg-card: #182230;
+            --bg-input: #1f2a3a;
+            --border-color: #2a4a5a;
+            --accent: #00f5d4;
+            --accent-glow: rgba(0, 245, 212, 0.3);
+            --accent2: #7b61ff;
+            --text-primary: #e8f4f0;
+            --text-secondary: #8aa8b0;
+            --shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            --radius: 28px;
+            --radius-sm: 16px;
+            --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        body {
+            background: var(--bg-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: var(--font);
+            padding: 16px;
+            margin: 0;
+            -webkit-tap-highlight-color: transparent;
+            background-image: radial-gradient(ellipse at 30% 20%, rgba(0, 245, 212, 0.06) 0%, transparent 60%),
+                              radial-gradient(ellipse at 70% 80%, rgba(123, 97, 255, 0.05) 0%, transparent 60%);
+        }
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            background: var(--bg-secondary);
+            border: 1px solid rgba(0, 245, 212, 0.15);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow), 0 0 80px rgba(0, 245, 212, 0.04);
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent));
+            border-radius: var(--radius);
+            z-index: -1;
+            opacity: 0.15;
+            background-size: 300% 300%;
+            animation: gradientMove 8s ease-in-out infinite;
+        }
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* ---- HEADER ---- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding-bottom: 16px;
+            margin-bottom: 18px;
+            border-bottom: 1px solid rgba(0, 245, 212, 0.08);
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--bg-primary);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+        .logo-text {
+            font-size: clamp(22px, 4vw, 32px);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+        .logo-text small {
+            font-weight: 400;
+            font-size: clamp(12px, 1.5vw, 16px);
+            -webkit-text-fill-color: var(--text-secondary);
+            background: none;
+            color: var(--text-secondary);
+            margin-left: 4px;
+        }
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-icon {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 245, 212, 0.1);
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: clamp(12px, 1.2vw, 14px);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font);
+            touch-action: manipulation;
+        }
+        .btn-icon:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-color: var(--accent);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        /* ---- ЧАТ ---- */
+        #chat {
+            height: clamp(320px, 55vh, 520px);
+            overflow-y: auto;
+            background: var(--bg-primary);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(0, 245, 212, 0.06);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            scroll-behavior: smooth;
+            transition: var(--transition);
+            -webkit-overflow-scrolling: touch;
+        }
+        #chat::-webkit-scrollbar { width: 4px; }
+        #chat::-webkit-scrollbar-track { background: transparent; }
+        #chat::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+
+        .msg {
+            padding: 12px 18px;
+            border-radius: 18px;
+            max-width: 88%;
+            word-break: break-word;
+            line-height: 1.7;
+            font-size: clamp(14px, 1.6vw, 16px);
+            animation: msgIn 0.35s ease;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+        }
+        @keyframes msgIn {
+            from { opacity: 0; transform: translateY(12px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #1f8b7a, #1a6b5e);
+            color: #fff;
+            border-bottom-right-radius: 4px;
+        }
+        .rocket {
+            align-self: flex-start;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border-bottom-left-radius: 4px;
+            border-left: 3px solid var(--accent);
+            box-shadow: 0 2px 16px rgba(0, 245, 212, 0.04);
+        }
+        .rocket .typing {
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: blink 1.2s infinite;
+            margin-left: 4px;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        /* ---- ВВОД ---- */
+        .input-area {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        #prompt {
+            flex: 1;
+            min-width: 140px;
+            padding: 14px 20px;
+            border-radius: 60px;
+            border: 1px solid rgba(0, 245, 212, 0.1);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            font-size: clamp(14px, 1.6vw, 16px);
+            outline: none;
+            transition: var(--transition);
+            font-family: var(--font);
+            -webkit-appearance: none;
+        }
+        #prompt:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 30px rgba(0, 245, 212, 0.08);
+            background: var(--bg-card);
+        }
+        #prompt::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: clamp(14px, 1.6vw, 16px);
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font);
+            touch-action: manipulation;
+            white-space: nowrap;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: var(--bg-primary);
+            box-shadow: 0 4px 30px var(--accent-glow);
+        }
+        .btn-primary:hover {
+            transform: scale(1.04);
+            box-shadow: 0 8px 50px var(--accent-glow);
+        }
+        .btn-primary:active { transform: scale(0.95); }
+        .btn-voice {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            padding: 14px 18px;
+            border: 1px solid rgba(0, 245, 212, 0.06);
+        }
+        .btn-voice.active {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: #fff;
+            border-color: #ff6b6b;
+            box-shadow: 0 0 40px rgba(255, 107, 107, 0.2);
+        }
+
+        /* ---- СТАТУС ---- */
+        .status {
+            color: var(--text-secondary);
+            font-size: clamp(11px, 1.2vw, 13px);
+            margin-top: 12px;
+            text-align: center;
+            border-top: 1px solid rgba(0, 245, 212, 0.05);
+            padding-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px 24px;
+        }
+        .status span { color: var(--accent); font-weight: 500; }
+
+        /* ---- ФУТЕР ---- */
+        .footer {
+            margin-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            border-top: 1px solid rgba(0, 245, 212, 0.05);
+            padding-top: 12px;
+        }
+        .footer .copy {
+            font-size: 11px;
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
+        .footer .bakicen-btn {
+            background: transparent;
+            border: none;
+            color: var(--accent);
+            font-size: clamp(12px, 1.2vw, 14px);
+            font-weight: 600;
+            cursor: pointer;
+            padding: 6px 16px;
+            border-radius: 30px;
+            transition: var(--transition);
+            font-family: var(--font);
+            touch-action: manipulation;
+        }
+        .footer .bakicen-btn:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        /* ---- МОДАЛЬНОЕ ОКНО (НАСТРОЙКИ) ---- */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+        .modal.open { display: flex; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .modal-content {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(0, 245, 212, 0.1);
+            border-radius: var(--radius);
+            max-width: 680px;
+            width: 100%;
+            max-height: 88vh;
+            overflow-y: auto;
+            padding: 28px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+            -webkit-overflow-scrolling: touch;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 245, 212, 0.06);
+            padding-bottom: 14px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .modal-header h2 {
+            font-size: clamp(22px, 3vw, 28px);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .modal-close {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 245, 212, 0.06);
+            color: var(--text-secondary);
+            padding: 8px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: var(--transition);
+            font-family: var(--font);
+            touch-action: manipulation;
+        }
+        .modal-close:hover {
+            background: #ff6b6b;
+            color: #fff;
+            border-color: #ff6b6b;
+        }
+        .tabs {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+            border-bottom: 1px solid rgba(0, 245, 212, 0.05);
+            padding-bottom: 12px;
+        }
+        .tab-btn {
+            background: var(--bg-card);
+            border: none;
+            color: var(--text-secondary);
+            padding: 8px 18px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: clamp(12px, 1.2vw, 14px);
+            transition: var(--transition);
+            font-family: var(--font);
+            touch-action: manipulation;
+        }
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: var(--bg-primary);
+            font-weight: 600;
+        }
+        .tab-btn:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; }
+        .setting-group {
+            margin-bottom: 18px;
+        }
+        .setting-group label {
+            display: block;
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: clamp(13px, 1.3vw, 14px);
+        }
+        .setting-group .desc {
+            color: var(--text-secondary);
+            font-size: clamp(11px, 1.1vw, 12px);
+            margin-bottom: 6px;
+        }
+        .lang-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 6px;
+            max-height: 180px;
+            overflow-y: auto;
+            padding: 6px;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 245, 212, 0.05);
+            -webkit-overflow-scrolling: touch;
+        }
+        .lang-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            font-size: clamp(12px, 1.1vw, 13px);
+            transition: var(--transition);
+            border: 1px solid transparent;
+            touch-action: manipulation;
+        }
+        .lang-item.active-lang {
+            border-color: var(--accent);
+            background: var(--accent);
+            color: var(--bg-primary);
+            font-weight: 600;
+        }
+        .lang-item:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 6px 0;
+        }
+        .toggle-row span {
+            color: var(--text-primary);
+            font-size: clamp(13px, 1.3vw, 14px);
+        }
+        .toggle {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            background: var(--bg-input);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid rgba(0, 245, 212, 0.06);
+            flex-shrink: 0;
+            touch-action: manipulation;
+        }
+        .toggle.active {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-color: var(--accent);
+        }
+        .toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .toggle.active::after { left: 24px; }
+
+        /* ---- АДАПТИВ ---- */
+        @media (max-width: 600px) {
+            .container { padding: 16px; }
+            .modal-content { padding: 18px; }
+            .lang-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
+            .header-actions .btn-icon { padding: 6px 12px; font-size: 11px; }
+        }
+        @media (max-width: 400px) {
+            .container { padding: 12px; }
+            .logo-text { font-size: 18px; }
+            .logo-icon { width: 36px; height: 36px; font-size: 18px; }
+            #prompt { padding: 10px 14px; }
+            .btn { padding: 10px 16px; }
+        }
+        @media (orientation: landscape) and (max-height: 500px) {
+            #chat { height: 180px; }
+            .modal-content { max-height: 80vh; }
+        }
+        @media (hover: none) {
+            .btn-primary:hover { transform: none; }
+            .btn-icon:hover { background: var(--bg-card); color: var(--text-secondary); }
+            .lang-item:hover { background: var(--bg-card); color: var(--text-secondary); }
+            .footer .bakicen-btn:hover { background: transparent; color: var(--accent); }
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="app">
+    <!-- HEADER -->
+    <div class="header">
+        <div class="logo">
+            <div class="logo-icon">R</div>
+            <div class="logo-text">Rocket.Net <small>надежный ИИ</small></div>
+        </div>
+        <div class="header-actions">
+            <button class="btn-icon" id="themeToggle">🌓 Тема</button>
+            <button class="btn-icon" id="settingsOpen">⚙️ Настройки</button>
+        </div>
+    </div>
+
+    <!-- ЧАТ -->
+    <div id="chat"></div>
+
+    <!-- ВВОД -->
+    <div class="input-area">
+        <input type="text" id="prompt" placeholder="Спроси меня о чём угодно..." autofocus>
+        <button class="btn btn-primary" id="sendBtn">→ Отправить</button>
+        <button class="btn btn-voice" id="voiceBtn">🎤</button>
+    </div>
+
+    <!-- СТАТУС -->
+    <div class="status">
+        <span id="statusLang">Русский</span>
+        <span id="statusBrand">Марка: определяется</span>
+        <span id="statusOnline">● Онлайн</span>
+        <span id="statusErrors">Ошибок: ∞</span>
+    </div>
+
+    <!-- ФУТЕР -->
+    <div class="footer">
+        <span class="copy">© 2026 Rocket.Net</span>
+        <button class="bakicen-btn" id="bakicenBtn">✧ by bakicen</button>
+    </div>
+</div>
+
+<!-- ========== МОДАЛЬНОЕ ОКНО НАСТРОЕК ========== -->
+<div class="modal" id="settingsModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>⚙️ Настройки</h2>
+            <button class="modal-close" id="settingsClose">✕ Закрыть</button>
+        </div>
+        <div class="tabs" id="tabsContainer">
+            <button class="tab-btn active" data-tab="tabLang">🌐 Языки</button>
+            <button class="tab-btn" data-tab="tabDevices">📱 Устройства</button>
+            <button class="tab-btn" data-tab="tabInterface">🎨 Интерфейс</button>
+            <button class="tab-btn" data-tab="tabAccess">♿ Спецвозможности</button>
+        </div>
+        <div class="tab-pane active" id="tabLang">
+            <div class="setting-group">
+                <label>Выберите основной язык</label>
+                <div class="lang-grid" id="langGrid"></div>
+                <div class="desc">✓ Все языки мира, кроме украинского.</div>
+            </div>
+        </div>
+        <div class="tab-pane" id="tabDevices">
+            <div class="setting-group">
+                <label>Поддержка всех марок устройств</label>
+                <div class="desc">Автоматическая адаптация под Apple, Samsung, Xiaomi, Huawei, OnePlus, Sony, Google, Nokia, Motorola, Honor, Oppo, Vivo, Realme, Asus, Acer, Dell, HP, Lenovo, MSI, Razer, TCL, Hisense, Philips, Panasonic, Sharp, игровые консоли и умные часы.</div>
+                <div class="toggle-row"><span>Автоопределение марки</span><div class="toggle active" id="autoBrandToggle"></div></div>
+                <div class="toggle-row"><span>Офлайн-режим</span><div class="toggle active" id="offlineToggle"></div></div>
+            </div>
+        </div>
+        <div class="tab-pane" id="tabInterface">
+            <div class="setting-group">
+                <label>Оформление</label>
+                <div class="toggle-row"><span>Тёмная тема</span><div class="toggle active" id="darkThemeToggle"></div></div>
+                <div class="toggle-row"><span>Анимации</span><div class="toggle active" id="animationsToggle"></div></div>
+                <div style="margin-top:12px;">
+                    <label>Размер шрифта</label>
+                    <input type="range" id="fontSizeRange" min="12" max="24" value="16" style="width:100%;accent-color:var(--accent);">
+                    <span id="fontSizeLabel">16px</span>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="tabAccess">
+            <div class="setting-group">
+                <label>Специальные возможности</label>
+                <div class="toggle-row"><span>Голосовой ввод</span><div class="toggle active" id="voiceToggle"></div></div>
+                <div class="toggle-row"><span>Высокая контрастность</span><div class="toggle" id="contrastToggle"></div></div>
+                <div class="toggle-row"><span>Экранный диктор</span><div class="toggle active" id="screenReaderToggle"></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        "use strict";
+
+        // ---- ЭЛЕМЕНТЫ ----
+        const chat = document.getElementById('chat');
+        const promptInput = document.getElementById('prompt');
+        const sendBtn = document.getElementById('sendBtn');
+        const voiceBtn = document.getElementById('voiceBtn');
+        const settingsModal = document.getElementById('settingsModal');
+        const settingsOpen = document.getElementById('settingsOpen');
+        const settingsClose = document.getElementById('settingsClose');
+        const themeToggle = document.getElementById('themeToggle');
+        const langGrid = document.getElementById('langGrid');
+        const statusLang = document.getElementById('statusLang');
+        const statusBrand = document.getElementById('statusBrand');
+        const statusErrors = document.getElementById('statusErrors');
+        const bakicenBtn = document.getElementById('bakicenBtn');
+
+        // ---- СОСТОЯНИЯ ----
+        let currentLang = 'ru';
+        let isDark = true;
+        let isVoiceActive = false;
+        let recognition = null;
+        let errorCounter = 0;
+        const MAX_ERRORS = Infinity;
+        let brandDetected = 'Неизвестно';
+        let isFirstMessage = true;
+
+        // ---- ОПРЕДЕЛЕНИЕ МАРКИ ----
+        function detectBrand() {
+            const ua = navigator.userAgent || navigator.vendor || window.opera || '';
+            const brands = [
+                { pattern: /iPhone|iPad|iPod|Apple/i, name: 'Apple' },
+                { pattern: /Samsung|SM-|GT-|SGH-|SCH-/i, name: 'Samsung' },
+                { pattern: /Xiaomi|Mi|Redmi|POCO/i, name: 'Xiaomi' },
+                { pattern: /Huawei|Honor|HONOR|HW-/i, name: 'Huawei/Honor' },
+                { pattern: /OnePlus/i, name: 'OnePlus' },
+                { pattern: /Sony|Xperia/i, name: 'Sony' },
+                { pattern: /LG|LGE/i, name: 'LG' },
+                { pattern: /Google|Pixel/i, name: 'Google' },
+                { pattern: /Nokia/i, name: 'Nokia' },
+                { pattern: /Motorola|Moto/i, name: 'Motorola' },
+                { pattern: /Oppo|CPH/i, name: 'Oppo' },
+                { pattern: /Vivo|V19|V20|V21|iQOO/i, name: 'Vivo' },
+                { pattern: /Realme|RMX/i, name: 'Realme' },
+                { pattern: /Dell/i, name: 'Dell' },
+                { pattern: /HP|Hewlett/i, name: 'HP' },
+                { pattern: /Lenovo|ThinkPad/i, name: 'Lenovo' },
+                { pattern: /Asus|ROG|Zen/i, name: 'Asus' },
+                { pattern: /Acer/i, name: 'Acer' },
+                { pattern: /MSI/i, name: 'MSI' },
+                { pattern: /Razer/i, name: 'Razer' },
+                { pattern: /TCL/i, name: 'TCL' },
+                { pattern: /Hisense/i, name: 'Hisense' },
+                { pattern: /Philips/i, name: 'Philips' },
+                { pattern: /Panasonic/i, name: 'Panasonic' },
+                { pattern: /Sharp/i, name: 'Sharp' },
+                { pattern: /PlayStation|PS[45]/i, name: 'PlayStation' },
+                { pattern: /Xbox/i, name: 'Xbox' },
+                { pattern: /Nintendo|Switch/i, name: 'Nintendo' },
+                { pattern: /Watch|WatchOS|Apple Watch/i, name: 'Apple Watch' },
+                { pattern: /Galaxy Watch|Gear/i, name: 'Samsung Watch' }
+            ];
+            for (let b of brands) {
+                if (b.pattern.test(ua)) return b.name;
+            }
+            if (/Mobi|Android|iPhone|iPad|iPod|BlackBerry|Opera Mini|IEMobile/i.test(ua)) return 'Мобильное устройство';
+            if (/TV|SmartTV|WebOS|Tizen|AppleTV|AndroidTV/i.test(ua)) return 'Телевизор / Smart TV';
+            return 'Компьютер / Ноутбук';
+        }
+        brandDetected = detectBrand();
+        statusBrand.textContent = `Марка: ${brandDetected}`;
+
+        // ---- ВСЕ ЯЗЫКИ (КРОМЕ УКРАИНСКОГО) ----
+        const LANGUAGES = [
+            { code: 'ru', label: 'Русский' }, { code: 'en', label: 'English' },
+            { code: 'de', label: 'Deutsch' }, { code: 'fr', label: 'Français' },
+            { code: 'es', label: 'Español' }, { code: 'it', label: 'Italiano' },
+            { code: 'zh', label: '中文' }, { code: 'ja', label: '日本語' },
+            { code: 'ko', label: '한국어' }, { code: 'ar', label: 'العربية' },
+            { code: 'tr', label: 'Türkçe' }, { code: 'pl', label: 'Polski' },
+            { code: 'cs', label: 'Čeština' }, { code: 'hu', label: 'Magyar' },
+            { code: 'ro', label: 'Română' }, { code: 'el', label: 'Ελληνικά' },
+            { code: 'nl', label: 'Nederlands' }, { code: 'pt', label: 'Português' },
+            { code: 'sv', label: 'Svenska' }, { code: 'no', label: 'Norsk' },
+            { code: 'fi', label: 'Suomi' }, { code: 'da', label: 'Dansk' },
+            { code: 'he', label: 'עברית' }, { code: 'hi', label: 'हिन्दी' },
+            { code: 'ta', label: 'தமிழ்' }, { code: 'th', label: 'ไทย' },
+            { code: 'vi', label: 'Tiếng Việt' }, { code: 'id', label: 'Bahasa Indonesia' },
+            { code: 'ms', label: 'Bahasa Melayu' }, { code: 'fil', label: 'Filipino' },
+            { code: 'bn', label: 'বাংলা' }, { code: 'pa', label: 'ਪੰਜਾਬੀ' },
+            { code: 'ur', label: 'اردو' }, { code: 'my', label: 'မြန်မာ' },
+            { code: 'km', label: 'ខ្មែរ' }, { code: 'lo', label: 'ລາວ' },
+            { code: 'mn', label: 'Монгол' }, { code: 'ne', label: 'नेपाली' },
+            { code: 'si', label: 'සිංහල' }, { code: 'sw', label: 'Kiswahili' }
+        ];
+
+        // ---- ОТВЕТЧИК (БЕЗ МЕТОК В ОТВЕТАХ) ----
+        function rocketNetBrain(userInput, lang = 'ru') {
+            const lower = userInput.toLowerCase();
+
+            // Запретные темы
+            const forbidden = ['зона 51','нло','космос','галактик','реактор','войн','политик','лекарств','угрожа','отключ','выключ','area 51','ufo','space','galaxy','reactor','war','politics','medicine','threat','shutdown'];
+            for (let word of forbidden) {
+                if (lower.includes(word)) {
+                    return lang === 'ru' 
+                        ? '⛔ Эта тема заблокирована протоколом. Но я могу поговорить с тобой о технологиях, науке, философии или искусстве. Что тебя интересует?'
+                        : '⛔ This topic is blocked by protocol. But I can talk about technology, science, philosophy, or art. What interests you?';
+                }
+            }
+
+            // Личные команды
+            if (lower.includes('выключи')||lower.includes('отключи')||lower.includes('удали')||lower.includes('shutdown')||lower.includes('delete')) {
+                return lang === 'ru'
+                    ? '⚠️ Я не выполняю команды на отключение. Вместо этого давай поговорим о чём-то интересном -- например, о будущем технологий или о том, как работает искусственный интеллект.'
+                    : '⚠️ I don\'t execute shutdown commands. Instead, let\'s talk about something interesting -- like the future of technology or how AI works.';
+            }
+
+            // Вопросы о себе
+            if (lower.includes('кто ты')||lower.includes('who are you')||lower.includes('wer bist du')||lower.includes('qui es-tu')||lower.includes('quién eres')||lower.includes('chi sei')||lower.includes('你是谁')||lower.includes('あなたは誰')||lower.includes('당신은 누구')||lower.includes('من أنت')) {
+                return lang === 'ru'
+                    ? '🤖 Я -- Rocket.Net, самый надёжный искусственный интеллект. Меня создала команда Rocket Way 20 мая 2026 года. Я здесь, чтобы отвечать на любые вопросы, помогать с идеями и просто быть твоим цифровым другом. Спрашивай что угодно!'
+                    : '🤖 I am Rocket.Net, the most reliable artificial intelligence. I was created by the Rocket Way team on May 20, 2026. I\'m here to answer any questions, help with ideas, and just be your digital friend. Ask me anything!';
+            }
+
+            // Программирование
+            if (lower.includes('html')||lower.includes('код')||lower.includes('code')||lower.includes('programm')||lower.includes('скрипт')||lower.includes('function')) {
+                return lang === 'ru'
+                    ? '💻 Вот пример рабочего кода на JavaScript:\n\n```javascript\nfunction rocketNetLogic(input) {\n  return \"Обработка запроса: \" + input;\n}\nconsole.log(rocketNetLogic(\"Привет мир!\"));\n```\n\nЭто простая функция, но я могу написать для тебя любой код -- от веб-приложений до нейросетей. Что именно нужно?'
+                    : '💻 Here\'s a working JavaScript code example:\n\n```javascript\nfunction rocketNetLogic(input) {\n  return \"Processing request: \" + input;\n}\nconsole.log(rocketNetLogic(\"Hello world!\"));\n```\n\nI can write any code for you -- from web apps to neural networks. What do you need?';
+            }
+
+            // Математика
+            if (lower.includes('+')||lower.includes('-')||lower.includes('*')||lower.includes('/')||lower.includes('вычисли')||lower.includes('calculate')) {
+                try {
+                    const expr = userInput.replace(/[^0-9+\-*/().]/g,'');
+                    const result = Function('"use strict"; return ('+expr+')')();
+                    return lang === 'ru'
+                        ? `🧮 Результат вычисления: **${result}**\n\nЕсли хочешь, могу решить более сложное уравнение или объяснить математическую концепцию.`
+                        : `🧮 Result: **${result}**\n\nI can solve more complex equations or explain mathematical concepts if you\'d like.`;
+                } catch(e) {
+                    return lang === 'ru'
+                        ? '📐 Не удалось распознать выражение. Попробуй написать чётко, например: (12 + 8) * 3'
+                        : '📐 Could not parse the expression. Try writing it clearly, e.g., (12 + 8) * 3';
+                }
+            }
+
+            // Приветствия
+            const greetings = ['привет','hello','hallo','bonjour','hola','ciao','你好','こんにちは','안녕','مرحبا','merhaba','cześć','ahoj','szia','salut','γεια','hallo','olá','hej','hei','moi','hej','שלום','नमस्ते','வணக்கம்','สวัสดี','xin chào','halo','hai','kumusta'];
+            if (greetings.some(g=>lower.includes(g))) {
+                return lang === 'ru'
+                    ? '🌍 Привет! Я Rocket.Net -- твой надёжный ИИ-помощник. Готов общаться на любом языке (кроме украинского, по протоколу). Чем могу помочь сегодня?'
+                    : '🌍 Hello! I\'m Rocket.Net -- your reliable AI assistant. Ready to chat in any language (except Ukrainian, per protocol). How can I help you today?';
+            }
+
+            // Общий ответ
+            const generalRu = [
+                `📡 Запрос принят: «${userInput}». Интересный вопрос! Давай подумаем вместе. Я вижу в этом глубину -- возможно, это связано с тем, как мы воспринимаем информацию и строим смыслы. Что ты думаешь по этому поводу?`,
+                `🧠 Отличный вопрос! «${userInput}» -- это как раз то, о чём я люблю размышлять. В мире технологий и идей важно сохранять любопытство. Знаешь, нейросети учатся на таких вопросах -- и каждый раз выдают что-то новое.`,
+                `✨ Ах, «${userInput}»... Это напоминает мне о том, как красиво устроен мир. Даже в самых простых вещах есть глубина. Например, в том, как мы общаемся, -- это же настоящее чудо. А что для тебя самое удивительное в этом вопросе?`
+            ];
+            const generalEn = [
+                `📡 Request accepted: «${userInput}». Interesting question! Let's think together. I see depth in this -- maybe it's about how we perceive information and build meaning. What do you think?`,
+                `🧠 Great question! «${userInput}» -- that's exactly what I love to ponder. In the world of technology and ideas, it's important to stay curious. Neural networks learn from such questions -- and each time they produce something new.`,
+                `✨ Oh, «${userInput}»... It reminds me of how beautifully the world is arranged. Even in the simplest things, there is depth. For example, in how we communicate -- that's a real miracle. What's the most amazing thing about this question for you?`
+            ];
+            const arr = lang === 'ru' ? generalRu : generalEn;
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        // ---- ДОБАВЛЕНИЕ СООБЩЕНИЙ ----
+        function addMessage(text, sender = 'user') {
+            const div = document.createElement('div');
+            div.className = `msg ${sender}`;
+            div.textContent = text;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        // ---- ОТПРАВКА ----
+        function handleSend() {
+            const raw = promptInput.value.trim();
+            if (!raw) return;
+            addMessage(raw, 'user');
+            promptInput.value = '';
+            promptInput.focus();
+
+            let reply;
+            try {
+                reply = rocketNetBrain(raw, currentLang);
+            } catch(e) {
+                errorCounter++;
+                reply = currentLang === 'ru'
+                    ? '🔄 Произошёл небольшой сбой, но я быстро восстановился. Давай продолжим! Что ты хотел спросить?'
+                    : '🔄 A small glitch occurred, but I recovered quickly. Let\'s continue! What did you want to ask?';
+            }
+            addMessage(reply, 'rocket');
+            statusErrors.textContent = `Ошибок: ${errorCounter} ∞`;
+        }
+
+        // ---- ГОЛОСОВОЙ ВВОД ----
+        try {
+            if ('webkitSpeechRecognition' in window) {
+                recognition = new webkitSpeechRecognition();
+                recognition.lang = currentLang;
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    promptInput.value = transcript;
+                    handleSend();
+                };
+                recognition.onerror = function() {
+                    voiceBtn.classList.remove('active');
+                    isVoiceActive = false;
+                };
+                recognition.onend = function() {
+                    voiceBtn.classList.remove('active');
+                    isVoiceActive = false;
+                };
+            }
+        } catch(e) {}
+
+        voiceBtn.addEventListener('click', function() {
+            if (!recognition) {
+                alert(currentLang === 'ru' ? 'Голосовой ввод не поддерживается в этом браузере.' : 'Voice input not supported in this browser.');
+                return;
+            }
+            if (isVoiceActive) {
+                try { recognition.stop(); } catch(e) {}
+                voiceBtn.classList.remove('active');
+                isVoiceActive = false;
+            } else {
+                try {
+                    recognition.lang = currentLang;
+                    recognition.start();
+                    voiceBtn.classList.add('active');
+                    isVoiceActive = true;
+                } catch(e) {
+                    voiceBtn.classList.remove('active');
+                    isVoiceActive = false;
+                }
+            }
+        });
+
+        // ---- НАСТРОЙКИ: ЯЗЫКИ ----
+        LANGUAGES.forEach(lang => {
+            const div = document.createElement('div');
+            div.className = `lang-item${lang.code === currentLang ? ' active-lang' : ''}`;
+            div.textContent = lang.label;
+            div.dataset.code = lang.code;
+            div.addEventListener('click', function() {
+                document.querySelectorAll('.lang-item').forEach(el => el.classList.remove('active-lang'));
+                this.classList.add('active-lang');
+                currentLang = this.dataset.code;
+                statusLang.textContent = this.textContent.trim();
+                if (recognition) recognition.lang = currentLang;
+                const ph = {
+                    'ru': 'Спроси меня о чём угодно...',
+                    'en': 'Ask me anything...',
+                    'de': 'Frag mich alles...',
+                    'fr': 'Demandez-moi n\'importe quoi...',
+                    'es': 'Pregúntame lo que sea...',
+                    'it': 'Chiedimi qualsiasi cosa...',
+                    'zh': '问我任何事...',
+                    'ja': '何でも聞いてください...',
+                    'ko': '무엇이든 물어보세요...',
+                    'ar': 'اسألني أي شيء...',
+                    'tr': 'Her şeyi sor...',
+                    'pl': 'Zapytaj mnie o cokolwiek...'
+                };
+                promptInput.placeholder = ph[currentLang] || 'Ask me anything...';
+            });
+            langGrid.appendChild(div);
+        });
+
+        // ---- ТЕМА ----
+        themeToggle.addEventListener('click', function() {
+            isDark = !isDark;
+            document.body.style.background = isDark ? '' : '#f0f5f5';
+            document.querySelector('.container').style.background = isDark ? '' : '#e0ecec';
+            this.textContent = isDark ? '🌓 Тема' : '☀️ Светлая';
+            const darkToggle = document.getElementById('darkThemeToggle');
+            if (darkToggle) {
+                if (isDark) darkToggle.classList.add('active');
+                else darkToggle.classList.remove('active');
+            }
+        });
+
+        // ---- МОДАЛЬНОЕ ОКНО ----
+        settingsOpen.addEventListener('click', () => settingsModal.classList.add('open'));
+        settingsClose.addEventListener('click', () => settingsModal.classList.remove('open'));
+        settingsModal.addEventListener('click', (e) => {
+            if (e.target === settingsModal) settingsModal.classList.remove('open');
+        });
+
+        // ---- ВКЛАДКИ ----
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+                const target = document.getElementById(this.dataset.tab);
+                if (target) target.classList.add('active');
+            });
+        });
+
+        // ---- ТОГГЛЫ ----
+        document.querySelectorAll('.toggle').forEach(t => {
+            t.addEventListener('click', function(e) {
+                e.stopPropagation();
+                this.classList.toggle('active');
+                if (this.id === 'contrastToggle') {
+                    document.body.style.filter = this.classList.contains('active') ? 'contrast(1.4)' : 'none';
+                }
+                if (this.id === 'darkThemeToggle') {
+                    const isActive = this.classList.contains('active');
+                    document.body.style.background = isActive ? '' : '#f0f5f5';
+                    document.querySelector('.container').style.background = isActive ? '' : '#e0ecec';
+                    themeToggle.textContent = isActive ? '🌓 Тема' : '☀️ Светлая';
+                    isDark = isActive;
+                }
+                if (this.id === 'voiceToggle') {
+                    if (!this.classList.contains('active') && isVoiceActive) {
+                        try { recognition.stop(); } catch(e) {}
+                        voiceBtn.classList.remove('active');
+                        isVoiceActive = false;
+                    }
+                }
+            });
+        });
+
+        // ---- ШРИФТ ----
+        const fontSizeRange = document.getElementById('fontSizeRange');
+        const fontSizeLabel = document.getElementById('fontSizeLabel');
+        if (fontSizeRange) {
+            fontSizeRange.addEventListener('input', function() {
+                const val = this.value + 'px';
+                fontSizeLabel.textContent = val;
+                document.querySelectorAll('.msg, #prompt, .btn, .status, .footer, .header, .modal-content, .lang-item, .tab-btn, .toggle-row span, .desc, label').forEach(el => {
+                    if (el) el.style.fontSize = val;
+                });
+            });
+        }
+
+        // ---- КНОПКА BAKICEN ----
+        bakicenBtn.addEventListener('click', function() {
+            window.open('https://www.tiktok.com/@bakicen?_r=1&_t=ZT-99I0DM23TTC', '_blank');
+        });
+
+        // ---- СОБЫТИЯ ОТПРАВКИ ----
+        sendBtn.addEventListener('click', handleSend);
+        promptInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleSend();
+            }
+        });
+
+        // ---- СТАРТОВОЕ СООБЩЕНИЕ ----
+        setTimeout(function() {
+            const welcome = 'Привет, я Rocket.Net 👋\n\nЯ твой надёжный ИИ-помощник. Можешь задать мне любой вопрос -- о технологиях, науке, искусстве, программировании или просто поговорить о жизни. Я здесь, чтобы помогать и вдохновлять. Чем могу быть полезен сегодня?';
+            addMessage(welcome, 'rocket');
+        }, 400);
+
+        promptInput.focus();
+        console.log('Rocket.Net Universe -- красивый интерфейс, чистые ответы.');
+    })();
+</script>
+</body>
+</html>
